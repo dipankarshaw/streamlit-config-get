@@ -1,0 +1,4 @@
+# .gitignore
+
+# Ignore the xr-clab directory
+xr-clab/
