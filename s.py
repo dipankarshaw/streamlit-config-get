@@ -1,5 +1,16 @@
 import streamlit as st
 from netmiko import ConnectHandler
+from azure.ai.inference import ChatCompletionsClient
+from azure.ai.inference.models import SystemMessage, UserMessage
+from azure.core.credentials import AzureKeyCredential
+
+endpoint = "https://DeepSeek-R1-respn.westus.models.ai.azure.com"
+model_name = "DeepSeek-R1"
+
+client = ChatCompletionsClient(
+    endpoint=endpoint,
+    credential=AzureKeyCredential("****"),
+)
 
 def connect_router(site_name, username, password, command):
     # Create a dictionary with the device details
@@ -15,7 +26,11 @@ def connect_router(site_name, username, password, command):
         net_connect = ConnectHandler(**device)
 
         # Send the command
-        output = net_connect.send_command(command)
+        commands = [cmd.strip() for cmd in command.replace('\n', ',').split(',')]
+        output = ""
+        for cmd in commands:
+            output += f"*****{cmd} ********\n"
+            output += net_connect.send_command(cmd) + "\n"
 
         # Close the connection
         net_connect.disconnect()
@@ -49,7 +64,7 @@ def configure_router(site_name, username, password, command):
 # Streamlit app
 def main():
     # Page title
-    page = st.sidebar.selectbox("Page", ["Fetch Outputs", "Configure Router"])
+    page = st.sidebar.selectbox("Page", ["Fetch Outputs", "Configure Router","Talk-to-Deepseek"])
     if page == "Fetch Outputs":
         st.title("Fetch Outputs")
         # User input fields
@@ -58,7 +73,7 @@ def main():
         password = st.text_input("Password", type="password", value="C1sco12345")
         command_options = ["show ip interface brief", "show version", "show running-config"]
         command = st.selectbox("Show Command", command_options, index=0)
-        custom_command = st.text_input("Or type your own command")
+        custom_command = st.text_area("Or type your own command in Comma separated or line separated way")
         if custom_command:
             command = custom_command
         # Connect button
@@ -75,9 +90,9 @@ def main():
     elif page == "Configure Router":
         st.title("Configure Router")
         # User input fields for configuration
-        site_name = st.text_input("Site Name or IP Address")
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
+        site_name = st.text_input("Site Name or IP Address", value="sandbox-iosxr-1.cisco.com")
+        username = st.text_input("Username", value="admin")
+        password = st.text_input("Password", type="password", value="C1sco12345")
         config_commands = st.text_area("Configuration Commands")
         # Configure button
         if st.button("Configure"):
@@ -90,6 +105,24 @@ def main():
                 # Display the output in a sub-page
                 with st.expander(f"Output for {site}"):
                     st.code(output)
+    elif page == "Talk-to-Deepseek":
+        st.title("Azure Deepseek Chatbot")
+        if "messages" not in st.session_state:
+            st.session_state.messages = [SystemMessage(content="You are a helpful assistant.")]
+
+        user_input = st.text_area("Ask your question:")
+
+        if st.button("Submit"):
+            st.session_state.messages.append(UserMessage(content=user_input))
+            response = client.complete(
+                messages=st.session_state.messages,
+                max_tokens=2048,
+                model=model_name
+            )
+            answer = response.choices[0].message.content
+            st.session_state.messages.append(SystemMessage(content=answer))
+            st.write(answer)
+
 
 if __name__ == "__main__":
     main()
