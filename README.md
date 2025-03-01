@@ -17,12 +17,22 @@ You can install the Python dependencies with pip:
 ```
 pip install streamlit netmiko
 ```
+or 
+```
+pip install -r requirements.txt
+```
 
 ### Usage
 To run the application, use the following command:
 
 ```
 streamlit run s.py
+```
+or 
+```
+
+```
+python3 -m streamlit run s.py
 ```
 
 ### Snaphot
