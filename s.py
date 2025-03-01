@@ -53,10 +53,14 @@ def main():
     if page == "Fetch Outputs":
         st.title("Fetch Outputs")
         # User input fields
-        site_name = st.text_input("Site Name or IP Address")
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        command = st.text_input("Show Command")
+        site_name = st.text_input("Site Name or IP Address", value="sandbox-iosxr-1.cisco.com")
+        username = st.text_input("Username", value="admin")
+        password = st.text_input("Password", type="password", value="C1sco12345")
+        command_options = ["show ip interface brief", "show version", "show running-config"]
+        command = st.selectbox("Show Command", command_options, index=0)
+        custom_command = st.text_input("Or type your own command")
+        if custom_command:
+            command = custom_command
         # Connect button
         if st.button("Get Output"):
             # Split the site names if comma-separated
