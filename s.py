@@ -4,13 +4,7 @@ from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
 
-endpoint = "https://DeepSeek-R1-respn.westus.models.ai.azure.com"
-model_name = "DeepSeek-R1"
 
-client = ChatCompletionsClient(
-    endpoint=endpoint,
-    credential=AzureKeyCredential("****"),
-)
 
 def connect_router(site_name, username, password, command):
     # Create a dictionary with the device details
@@ -107,11 +101,18 @@ def main():
                     st.code(output)
     elif page == "Talk-to-Deepseek":
         st.title("Azure Deepseek Chatbot")
+        model_name = "DeepSeek-R1"
+
         if "messages" not in st.session_state:
             st.session_state.messages = [SystemMessage(content="You are a helpful assistant.")]
-
+        endpoint = st.text_input("endpoint", value="https://DeepSeek-R1-respn.westus.models.ai.azure.com",)
+        key = st.text_input("key",type="password",value="API_KEY")
         user_input = st.text_area("Ask your question:")
 
+        client = ChatCompletionsClient(
+            endpoint=endpoint,
+            credential=AzureKeyCredential(key),
+        )
         if st.button("Submit"):
             st.session_state.messages.append(UserMessage(content=user_input))
             response = client.complete(
