@@ -58,7 +58,7 @@ def configure_router(site_name, username, password, command):
 # Streamlit app
 def main():
     # Page title
-    page = st.sidebar.selectbox("Page", ["Fetch Outputs", "Configure Router","Talk-to-Deepseek"])
+    page = st.sidebar.selectbox("Page", ["Fetch Outputs", "Configure Router","Talk-to-Deepseek","Talk-to-Microsoft-phi4"])
     if page == "Fetch Outputs":
         st.title("Fetch Outputs")
         # User input fields
@@ -105,8 +105,8 @@ def main():
 
         if "messages" not in st.session_state:
             st.session_state.messages = [SystemMessage(content="You are a helpful assistant.")]
-        endpoint = st.text_input("endpoint", value="https://DeepSeek-R1-respn.westus.models.ai.azure.com",)
-        key = st.text_input("key",type="password",value="API_KEY")
+        endpoint = st.text_input("endpoint", value="https://DeepSeek-R1-cbngc.eastus.models.ai.azure.com",)
+        key = st.text_input("key",type="password",value="N5FfB3fNbJTnLWnS9audXJWuUe7hVF5w")
         user_input = st.text_area("Ask your question:")
 
         client = ChatCompletionsClient(
@@ -123,7 +123,36 @@ def main():
             answer = response.choices[0].message.content
             st.session_state.messages.append(SystemMessage(content=answer))
             st.write(answer)
+    elif page == "Talk-to-Microsoft-phi4":
+        st.title("Azure Microsoft phi-4 Chatbot")
+        model_name = "Phi-4"
+    
+        if "messages" not in st.session_state:
+            st.session_state.messages = [SystemMessage(content="You are a helpful assistant.")]
+        endpoint = "https://Phi-4-jhzdm.eastus.models.ai.azure.com"
 
+        endpoint = st.text_input("endpoint", value="https://Phi-4-jhzdm.eastus.models.ai.azure.com",)
+        key = st.text_input("key",type="password",value="wYfWdT0xb640vPWS1kaxw8YSnaB2a2wS")
+        user_input = st.text_area("Ask your question:")
+
+        client = ChatCompletionsClient(
+            endpoint=endpoint,
+            credential=AzureKeyCredential("wYfWdT0xb640vPWS1kaxw8YSnaB2a2wS"),
+        )
+        if st.button("Submit"):
+            st.session_state.messages.append(UserMessage(content=user_input))
+            response = client.complete(
+                messages=st.session_state.messages,
+                max_tokens=2048,
+                temperature=0.8,
+                top_p=0.1,
+                presence_penalty=0.0,
+                frequency_penalty=0.0,
+                model=model_name
+            )
+            answer = response.choices[0].message.content
+            st.session_state.messages.append(SystemMessage(content=answer))
+            st.write(answer)
 
 if __name__ == "__main__":
     main()
