@@ -12,6 +12,6 @@
     },
     "postCreateCommand": "pip install -r requirements.txt",
     "postAttachCommand": {"server": "python3 -m streamlit run s.py"},
-    "portsAttributes": {"5000": {"label": "Application", "onAutoForward": "openPreview"},
+    "portsAttributes": {"5000": {"label": "Application", "onAutoForward": "openPreview"}},
     "forwardPorts": [5000]
 }
