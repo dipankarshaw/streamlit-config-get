@@ -1,6 +1,6 @@
 # Streamlit & netmiko interaction
 
-This project is a Python application that uses the `netmiko` library to connect to a Cisco XR router and execute commands. The application provides a Streamlit web interface for users to interact with the router.
+This project is a Python application that uses the `netmiko` library to connect to a Cisco XR router and execute commands. The application provides a Streamlit web interface for users to interact with the router and also includes Azure chatbot functionalities.
 
 ## Getting Started
 
@@ -11,11 +11,12 @@ These instructions will get you a copy of the project up and running on your loc
 - Python 3.x
 - Streamlit
 - Netmiko
+- Azure AI Inference
 
 You can install the Python dependencies with pip:
 
 ```sh
-pip install streamlit netmiko
+pip install streamlit netmiko azure-ai-inference
 ```
 or 
 ```sh
@@ -40,19 +41,26 @@ The `s.py` file contains the main code for the Streamlit application. Here is a 
 1. **Imports**:
     - `streamlit` is used to create the web interface.
     - `netmiko` is used to connect to the Cisco XR router and execute commands.
+    - `azure.ai.inference` is used to interact with Azure chatbots.
 
 2. **Functions**:
     - `connect_router(site_name, username, password, command)`: Connects to the router and executes a command. Returns the output or an error message.
     - `configure_router(site_name, username, password, command)`: Connects to the router, enters enable mode, sends configuration commands, commits the changes, and returns the output or an error message.
 
 3. **Streamlit App**:
-    - The app has two main pages: "Fetch Outputs" and "Configure Router".
+    - The app has four main pages: "Fetch Outputs", "Configure Router", "Talk-to-Deepseek", and "Talk-to-Microsoft-phi4".
     - **Fetch Outputs**:
         - Users can input the site name or IP address, username, password, and select or type a command to execute.
         - The app connects to the router and displays the output of the command.
     - **Configure Router**:
         - Users can input the site name or IP address, username, password, and configuration commands.
         - The app connects to the router, sends the configuration commands, commits the changes, and displays the output.
+    - **Talk-to-Deepseek**:
+        - Users can interact with the Azure Deepseek chatbot by providing an endpoint, key, and their question.
+        - The app sends the question to the chatbot and displays the response.
+    - **Talk-to-Microsoft-phi4**:
+        - Users can interact with the Azure Microsoft phi-4 chatbot by providing an endpoint, key, and their question.
+        - The app sends the question to the chatbot and displays the response.
 
 ### Default Values
 
