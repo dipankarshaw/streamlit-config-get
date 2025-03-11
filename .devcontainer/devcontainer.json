@@ -1,9 +1,6 @@
 {
     "name": "Python 3",
-    "image": "mcr.microsoft.com/devcontainers/python:3.9",
-    "features": {
-        "ghcr.io/devcontainers/features/github-copilot:1": {}
-    },
+    "image": "mcr.microsoft.com/devcontainers/universal:linux",
     "customizations": {
         "vscode": {
             "extensions": [
