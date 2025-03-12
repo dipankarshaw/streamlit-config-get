@@ -6,7 +6,8 @@
             "extensions": [
                 "ms-python.python",
                 "ms-python.vscode-pylance",
-                "github.copilot"
+                "github.copilot",
+                "ms-python.pylint"
             ]
         }
     },
