@@ -1,3 +1,6 @@
+# pylint: disable=line-too-long
+# pylint: disable=broad-exception-caught
+# pylint: disable=import-error
 """
 This module provides a Streamlit application for interacting with Cisco routers and Azure chatbots.
 """
@@ -62,7 +65,8 @@ def configure_router(site_name, username, password, command):
         command (str): The configuration command(s) to be sent to the router, separated by newlines.
 
     Returns:
-        str: The output from the router after sending the configuration commands and committing the changes.
+        str: The output from the router after sending the configuration commands 
+             and committing the changes.
              If an exception occurs, returns the exception message as a string.
 
     Raises:
@@ -92,6 +96,21 @@ def configure_router(site_name, username, password, command):
 
 # Streamlit app
 def main():
+    """
+    Main function to render the Streamlit app with multiple pages.
+
+    Pages:
+    - Fetch Outputs: Allows users to fetch outputs from a router by providing site name, username, password, and command.
+    - Configure Router: Allows users to configure a router by providing site name, username, password, and configuration commands.
+    - Talk-to-Deepseek: Allows users to interact with the Azure Deepseek Chatbot by providing an endpoint, key, and user input.
+    - Talk-to-Microsoft-phi4: Allows users to interact with the Azure Microsoft phi-4 Chatbot by providing an endpoint, key, and user input.
+
+    Each page has its own set of input fields and buttons to perform the respective actions.
+
+    Note:
+    - The 'Fetch Outputs' and 'Configure Router' pages require a function `connect_router` and `configure_router` respectively to handle the router connections.
+    - The 'Talk-to-Deepseek' and 'Talk-to-Microsoft-phi4' pages require the `ChatCompletionsClient` and `AzureKeyCredential` classes from the Azure SDK to interact with the chatbots.
+    """
     # Page title
     page = st.sidebar.selectbox("Page", [
         "Fetch Outputs", 
