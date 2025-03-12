@@ -1,3 +1,7 @@
+"""
+This module provides a Streamlit application for interacting with Cisco routers and Azure chatbots.
+"""
+
 import streamlit as st
 from netmiko import ConnectHandler
 from azure.ai.inference import ChatCompletionsClient
@@ -7,6 +11,21 @@ from azure.core.credentials import AzureKeyCredential
 
 
 def connect_router(site_name, username, password, command):
+    """
+    Connect to a Cisco router and execute a series of commands.
+
+    Args:
+        site_name (str): The IP address or hostname of the router.
+        username (str): The username for authentication.
+        password (str): The password for authentication.
+        command (str): A string containing one or more commands separated by newlines.
+
+    Returns:
+        str: The output from the executed commands or an error message if the connection fails.
+
+    Raises:
+        Exception: If there is an issue with the connection or command execution.
+    """
     # Create a dictionary with the device details
     device = {
         'device_type': 'cisco_xr',
@@ -33,6 +52,22 @@ def connect_router(site_name, username, password, command):
     except Exception as e:
         return str(e)
 def configure_router(site_name, username, password, command):
+    """
+    Configure a Cisco router using provided credentials and commands.
+
+    Args:
+        site_name (str): The IP address or hostname of the router.
+        username (str): The username for authentication.
+        password (str): The password for authentication.
+        command (str): The configuration command(s) to be sent to the router, separated by newlines.
+
+    Returns:
+        str: The output from the router after sending the configuration commands and committing the changes.
+             If an exception occurs, returns the exception message as a string.
+
+    Raises:
+        Exception: If there is an error during the connection or configuration process.
+    """
     # Create a dictionary with the device details
     device = {
         'device_type': 'cisco_xr',
@@ -58,7 +93,11 @@ def configure_router(site_name, username, password, command):
 # Streamlit app
 def main():
     # Page title
-    page = st.sidebar.selectbox("Page", ["Fetch Outputs", "Configure Router","Talk-to-Deepseek","Talk-to-Microsoft-phi4"])
+    page = st.sidebar.selectbox("Page", [
+        "Fetch Outputs", 
+        "Configure Router",
+        "Talk-to-Deepseek",
+        "Talk-to-Microsoft-phi4"])
     if page == "Fetch Outputs":
         st.title("Fetch Outputs")
         # User input fields
@@ -126,7 +165,6 @@ def main():
     elif page == "Talk-to-Microsoft-phi4":
         st.title("Azure Microsoft phi-4 Chatbot")
         model_name = "Phi-4"
-    
         if "messages" not in st.session_state:
             st.session_state.messages = [SystemMessage(content="You are a helpful assistant.")]
         endpoint = "https://Phi-4-jhzdm.eastus.models.ai.azure.com"
