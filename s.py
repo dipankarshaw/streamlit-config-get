@@ -13,7 +13,7 @@ from azure.core.credentials import AzureKeyCredential
 
 
 
-def connect_router(site_name, username, password, command):
+def connect_router(site_name, username, password, command,cisco_device_type):
     """
     Connect to a Cisco router and execute a series of commands.
 
@@ -31,7 +31,7 @@ def connect_router(site_name, username, password, command):
     """
     # Create a dictionary with the device details
     device = {
-        'device_type': 'cisco_xr',
+        'device_type': cisco_device_type,
         'ip': site_name,
         'username': username,
         'password': password,
@@ -54,7 +54,7 @@ def connect_router(site_name, username, password, command):
         return output
     except Exception as e:
         return str(e)
-def configure_router(site_name, username, password, command):
+def configure_router(site_name, username, password, command,cisco_device_type):
     """
     Configure a Cisco router using provided credentials and commands.
 
@@ -74,7 +74,7 @@ def configure_router(site_name, username, password, command):
     """
     # Create a dictionary with the device details
     device = {
-        'device_type': 'cisco_xr',
+        'device_type': cisco_device_type,
         'ip': site_name,
         'username': username,
         'password': password,
@@ -113,12 +113,14 @@ def main():
     """
     # Page title
     page = st.sidebar.selectbox("Page", [
-        "Fetch Outputs", 
-        "Configure Router",
+        "Fetch Outputs ios-xr", 
+        "Configure Router ios-xr",
+        "Fetch Outputs ios-xe", 
+        "Configure Router ios-xe",
         "Talk-to-Deepseek",
         "Talk-to-Microsoft-phi4"])
-    if page == "Fetch Outputs":
-        st.title("Fetch Outputs")
+    if page == "Fetch Outputs ios-xr":
+        st.title("Fetch Outputs ios-xr")
         # User input fields
         site_name = st.text_input("Site Name or IP Address", value="sandbox-iosxr-1.cisco.com")
         username = st.text_input("Username", value="admin")
@@ -135,12 +137,12 @@ def main():
             # Iterate over the sites and connect to each router
             for site in sites:
                 # Call the connect_router function
-                output = connect_router(site, username, password, command)
+                output = connect_router(site, username, password, command,cisco_device_type="cisco_xr")
                 # Display the output in a sub-page
                 with st.expander(f"Output for {site}"):
                     st.code(output)
-    elif page == "Configure Router":
-        st.title("Configure Router")
+    elif page == "Configure Router ios-xr":
+        st.title("Configure Router ios-xr")
         # User input fields for configuration
         site_name = st.text_input("Site Name or IP Address", value="sandbox-iosxr-1.cisco.com")
         username = st.text_input("Username", value="admin")
@@ -153,7 +155,47 @@ def main():
             # Iterate over the sites and connect to each router
             for site in sites:
                 # Call the connect_router function
-                output = configure_router(site, username, password, config_commands)
+                output = configure_router(site, username, password, config_commands,cisco_device_type="cisco_xr")
+                # Display the output in a sub-page
+                with st.expander(f"Output for {site}"):
+                    st.code(output)
+    elif page == "Fetch Outputs ios-xe":
+        st.title("Fetch Outputs ios-xe")
+        # User input fields
+        site_name = st.text_input("Site Name or IP Address", value="devnetsandboxiosxe.cisco.com")
+        username = st.text_input("Username", value="admin")
+        password = st.text_input("Password", type="password", value="C1sco12345")
+        command_options = ["show ip interface brief", "show version", "show running-config"]
+        command = st.selectbox("Show Command", command_options, index=0)
+        custom_command = st.text_area("Or type your own command in Comma separated or line separated way")
+        if custom_command:
+            command = custom_command
+        # Connect button
+        if st.button("Get Output"):
+            # Split the site names if comma-separated
+            sites = [s.strip() for s in site_name.split(',')]
+            # Iterate over the sites and connect to each router
+            for site in sites:
+                # Call the connect_router function
+                output = connect_router(site, username, password, command,cisco_device_type='cisco_xe')
+                # Display the output in a sub-page
+                with st.expander(f"Output for {site}"):
+                    st.code(output)
+    elif page == "Configure Router ios-xe":
+        st.title("Configure Router ios-xe")
+        # User input fields for configuration
+        site_name = st.text_input("Site Name or IP Address", value="devnetsandboxiosxe.cisco.com")
+        username = st.text_input("Username", value="admin")
+        password = st.text_input("Password", type="password", value="C1sco12345")
+        config_commands = st.text_area("Configuration Commands")
+        # Configure button
+        if st.button("Configure"):
+            # Split the site names if comma-separated
+            sites = [s.strip() for s in site_name.split(',')]
+            # Iterate over the sites and connect to each router
+            for site in sites:
+                # Call the connect_router function
+                output = configure_router(site, username, password, config_commands,cisco_device_type='cisco_xe')
                 # Display the output in a sub-page
                 with st.expander(f"Output for {site}"):
                     st.code(output)
