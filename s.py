@@ -116,12 +116,32 @@ def main():
     """
     # Page title
     page = st.sidebar.selectbox("Page", [
-        "Fetch Outputs ios-xr", 
-        "Configure Router ios-xr",
-        "Fetch Outputs ios-xe", 
-        "Configure Router ios-xe",
+        "Welcome",
+        "ios-xr", 
+        "ios-xe",
         "Talk-to-Deepseek",
         "Talk-to-Microsoft-phi4"])
+
+    if page == "Welcome":
+        st.title("Welcome to the Network Automation and Chatbot Interaction App")
+        st.write("""
+            This application allows you to:
+            - Interact with Cisco routers (ios-xr and ios-xe) to fetch outputs or configure them.
+            - Communicate with Azure chatbots like Deepseek and Microsoft phi-4.
+            
+            Use the sidebar to navigate between different pages.
+        """)
+        st.write("**Created by: Dipankar Shaw**")
+    elif page == "ios-xr":
+        xr_page = st.sidebar.radio("ios-xr Subpage", [
+            "Fetch Outputs ios-xr", 
+            "Configure Router ios-xr"])
+        page = xr_page
+    elif page == "ios-xe":
+        xe_page = st.sidebar.radio("ios-xe Subpage", [
+            "Fetch Outputs ios-xe", 
+            "Configure Router ios-xe"])
+        page = xe_page
     if page == "Fetch Outputs ios-xr":
         st.title("Fetch Outputs ios-xr")
         # User input fields
