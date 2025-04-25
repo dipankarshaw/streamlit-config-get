@@ -87,7 +87,10 @@ def configure_router(site_name, username, password, command,cisco_device_type):
         # Send the command(s)
         output = net_connect.send_config_set(command.split('\n'))
         # Commit the configuration changes
-        output += net_connect.commit()
+        if cisco_device_type == "cisco_xe":
+            output += net_connect.save_config()
+        elif cisco_device_type == "cisco_xr":
+            output += net_connect.commit()
         # Close the connection
         net_connect.disconnect()
         return output
